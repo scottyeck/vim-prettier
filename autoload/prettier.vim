@@ -15,6 +15,17 @@ let s:root_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let s:prettier_job_running = 0
 let s:prettier_quickfix_open = 0
 
+" Returns the directory of the first file in `argv` or `cwd` if it's empty
+" https://vi.stackexchange.com/a/11233
+function s:Find_Session_Dir() abort
+  if len(argv()) > 0
+    return fnamemodify(argv()[0], ':p:h')
+  endif
+  return getcwd()
+endfunction!
+
+let g:session_dir = s:Find_Session_Dir()
+
 function! prettier#PrettierCliPath() abort
   let l:execCmd = s:Get_Prettier_Exec()
 
@@ -364,7 +375,7 @@ function! s:Get_Prettier_Exec() abort
 endfunction
 
 function! s:Get_Prettier_Local_Exec() abort
-  return s:Get_Exec(getcwd())
+  return s:Get_Exec(g:session_dir)
 endfunction
 
 function! s:Get_Prettier_Global_Exec() abort
